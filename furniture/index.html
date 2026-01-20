@@ -1,1 +1,1232 @@
-ывавып
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Starlight 3 • Module 5 • Where’s Alvin? • Mini Site</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f3f8ff;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#dbe7ff;
+      --accent:#3b82f6;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --soft:#eef5ff;
+      --shadow: 0 14px 40px rgba(15,23,42,.10);
+      --radius:18px;
+      --font: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --fs:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    html, body{ overflow-x:hidden; } /* ✅ убрали правый скролл */
+
+    body{
+      margin:0;
+      font-family:var(--font);
+      font-size:var(--fs);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 500px at 20% 10%, #ffffff 0%, rgba(255,255,255,0) 65%),
+        radial-gradient(900px 500px at 80% 0%, #e9f2ff 0%, rgba(233,242,255,0) 70%),
+        var(--bg);
+      -webkit-user-select:none;
+      user-select:none;
+    }
+
+    .wrap{max-width:1200px;margin:0 auto;padding:22px}
+    header{
+      display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .title{display:flex;gap:12px;align-items:center;}
+    .badge{
+      width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#dbeafe,#fff);
+      display:grid;place-items:center;box-shadow:var(--shadow);
+      font-size:24px;
+    }
+    h1{margin:0;font-size:22px;line-height:1.15}
+    .sub{margin:2px 0 0;color:var(--muted);font-size:15px}
+
+    .topbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
+    .btn{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff,#f7fbff);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      font-family:var(--font);
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(15,23,42,.06);
+      transition:transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(15,23,42,.10);border-color:#c8dcff}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{background:linear-gradient(180deg,#e8f1ff,#ffffff);border-color:#cfe2ff;}
+    .btn.active{outline:3px solid rgba(59,130,246,.20);border-color:#bcd7ff;}
+    .btn.good{border-color:rgba(34,197,94,.35); background:linear-gradient(180deg,#eafff2,#ffffff)}
+    .btn.bad{border-color:rgba(239,68,68,.35); background:linear-gradient(180deg,#ffecec,#ffffff)}
+
+    .panel{
+      background:rgba(255,255,255,.8);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .row{display:grid;gap:14px}
+    .row.two{grid-template-columns: 1fr 280px;}
+    @media (max-width: 980px){ .row.two{grid-template-columns:1fr} }
+
+    .task{display:none}
+    .task.active{display:block}
+
+    .taskhead{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .taskhead h2{margin:0;font-size:20px}
+    .hint{color:var(--muted);font-size:16px;margin:4px 0 0}
+
+    /* ===== Task 1: chips ===== */
+    .chips{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      align-content:flex-start;
+      padding:12px;
+      background:linear-gradient(180deg,#ffffff,#f6fbff);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      min-height:70px;
+    }
+
+    .chip{
+      border:1px solid #cfe2ff;
+      background:#fff;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:800;
+      cursor:grab;
+      box-shadow:0 10px 24px rgba(15,23,42,.06);
+      user-select:none;
+      transition:transform .08s ease, border-color .2s ease;
+    }
+    .chip:active{cursor:grabbing;transform:scale(.98)}
+    .chip.used{opacity:.45;cursor:not-allowed;text-decoration:line-through;}
+    .chip.correct{border-color:rgba(34,197,94,.55); background:#f0fff5}
+    .chip.wrong{border-color:rgba(239,68,68,.55); background:#fff1f1}
+
+    .grid15{display:grid;grid-template-columns:repeat(5, minmax(150px, 1fr));gap:14px;}
+    @media (max-width: 980px){ .grid15{grid-template-columns:repeat(3, minmax(140px, 1fr));} }
+    @media (max-width: 520px){ .grid15{grid-template-columns:repeat(2, minmax(140px, 1fr));} }
+
+    .piccard{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
+      padding:12px;
+      display:grid;
+      gap:10px;
+      align-content:start;
+      min-height:145px;
+    }
+    .pic{
+      width:100%;
+      border-radius:14px;
+      background:linear-gradient(180deg,#f3f8ff,#ffffff);
+      border:1px dashed #cfe2ff;
+      height:110px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+    .pic img{
+      width:100%;
+      height:95%;
+      object-fit:contain;
+      padding:10px;
+    }
+
+    .drop{
+      border-radius:14px;
+      border:2px dashed #bcd7ff;
+      background:#f7fbff;
+      padding:8px;
+      min-height:35px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      color:var(--muted);
+      transition:border-color .2s ease, background .2s ease;
+    }
+    .drop.over{border-color:var(--accent); background:#eef6ff; color:var(--ink)}
+    .drop.filled{border-style:solid; border-color:rgba(34,197,94,.45); background:#f0fff5; color:var(--ink)}
+    .drop.bad{border-style:solid; border-color:rgba(239,68,68,.45); background:#fff1f1; color:var(--ink)}
+
+    .stats{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted);font-weight:800;}
+    .pill{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 12px;
+      box-shadow:0 10px 24px rgba(15,23,42,.06);
+    }
+
+    /* ===== Task 2: Memory ===== */
+    .memgrid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(130px, 1fr));
+      gap:14px;
+    }
+    @media (max-width: 980px){ .memgrid{grid-template-columns:repeat(4, minmax(110px, 1fr));} }
+    @media (max-width: 520px){ .memgrid{grid-template-columns:repeat(3, minmax(110px, 1fr));} }
+
+    .mcard{
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#fff;
+      min-height:110px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
+      position:relative;
+      overflow:hidden;
+      user-select:none;
+      font-weight:900;
+      transition:transform .08s ease, box-shadow .2s ease;
+    }
+    .mcard:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+    .mcard:active{transform:translateY(0)}
+
+    .mcard .front, .mcard .back{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      overflow:hidden;
+    }
+
+    .mcard .back{
+      background:linear-gradient(180deg,#ffffff,#f6fbff);
+      color:var(--ink);
+      font-size:34px;
+    }
+    .mcard .front{
+      opacity:0;
+      background:linear-gradient(180deg,#ffffff,#ffffff);
+      font-size:28px;
+      text-align:center;
+      font-weight:900;
+    }
+    .mcard .front img{
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .mcard.revealed .front{opacity:1}
+    .mcard.revealed .back{opacity:0}
+    .mcard.matched{
+      border-color:rgba(34,197,94,.55);
+      background:#f0fff5;
+      box-shadow:0 14px 32px rgba(34,197,94,.15);
+      cursor:default;
+    }
+
+    /* ===== Task 3: Wordsearch ===== */
+    .ws{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap:12px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){ .ws{grid-template-columns:1fr} }
+
+    .board{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:10px;
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    .boardgrid{
+      --cell: 34px;
+      display:grid;
+      grid-template-columns: repeat(var(--n), var(--cell));
+      gap:5px;
+      justify-content:center;
+    }
+
+    .cell{
+      width:var(--cell);
+      height:var(--cell);
+      border-radius:12px;
+      border:2px solid #cfe2ff;
+      background:#f7fbff;
+      font-weight:900;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      user-select:none;
+      transition:transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    .cell:hover{transform:translateY(-1px)}
+    .cell.good{background:#eafff2;border-color:rgba(34,197,94,.55)}
+    .cell.locked{background:#eafff2;border-color:rgba(34,197,94,.55); cursor:default}
+    .cell.bad{background:#ffecec;border-color:rgba(239,68,68,.55)}
+
+    .wlist{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .wlist h3{margin:0 0 10px}
+
+    #wsWords{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px 12px;
+      align-content:start;
+      margin-top:6px;
+    }
+
+    #wsWords .wordbtn{
+      width:100%;
+      text-align:center;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffff,#f7fbff);
+      border-radius:16px;
+      padding:12px 12px;
+      font-weight:900;
+      font-size:18px;
+      line-height:1.05;
+      cursor:pointer;
+      margin:0;
+      box-shadow:0 10px 24px rgba(15,23,42,.06);
+      transition:transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    #wsWords .wordbtn:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(15,23,42,.10);border-color:#c8dcff}
+    #wsWords .wordbtn:active{transform:translateY(0)}
+    #wsWords .wordbtn.active{outline:3px solid rgba(59,130,246,.20); border-color:#bcd7ff}
+    #wsWords .wordbtn.found{background:linear-gradient(180deg,#eafff2,#ffffff); border-color:rgba(34,197,94,.55)}
+
+    .smallmuted{color:var(--muted);margin:8px 0 0}
+
+    .footnote{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:12px;
+    }
+    #soundBtn{ display:none; }
+
+    /* ===== Task 4: Letters (bigger + bold) ===== */
+    .t4-letter{
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      border:2px solid #cfe2ff;
+      background:#eef5ff;
+      display:grid;
+      place-items:center;
+
+      font-weight:900;
+      font-size:28px;
+      line-height:1;
+      letter-spacing:0.5px;
+
+      cursor:grab;
+      user-select:none;
+    }
+
+    .t4-slot{
+      width:64px;
+      height:64px;
+      border-radius:16px;
+
+      border:2px dashed #bcd7ff;
+      background:#f7fbff;
+
+      font-weight:900;
+      font-size:28px;
+      line-height:1;
+      display:grid;
+      place-items:center;
+      user-select:none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge">🏠</div>
+        <div>
+          <h1>Vocabulary Practice</h1>
+          <div class="sub">Starlight 3 • Module 5</div>
+        </div>
+      </div>
+
+      <div class="topbar">
+        <button class="btn primary active" data-tab="task1">Task 1 • Drag</button>
+        <button class="btn primary" data-tab="task2">Task 2 • Memory</button>
+        <button class="btn primary" data-tab="task3">Task 3 • Wordsearch</button>
+        <button class="btn primary" data-tab="task4">Task 4 • Letters</button>
+        <button class="btn" id="soundBtn" title="Sound on/off">🔊 Sound: ON</button>
+      </div>
+    </header>
+
+    <!-- TASK 1 -->
+    <section id="task1" class="task active">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 1 - Drag the word to the correct picture</h2>
+            <div class="hint">Drag a word and drop it into the matching picture box.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t1Score">✅ Correct: <span id="t1Correct">0</span>/15</button>
+            <button class="btn" id="t1Shuffle">🔄 Shuffle</button>
+            <button class="btn" id="t1Reset">↩ Reset</button>
+          </div>
+        </div>
+
+        <div class="row two">
+          <div class="panel" style="padding:12px">
+            <div class="grid15" id="t1Grid"></div>
+          </div>
+
+          <div class="panel" style="padding:12px">
+            <div style="font-weight:900;margin:0 0 10px">Words</div>
+            <div class="chips" id="t1Chips"></div>
+            <div class="footnote"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK 2 -->
+    <section id="task2" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 2 - Memory game (pictures + words)</h2>
+            <div class="hint">Name the numbers. Click the cards. Find 8 pairs.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t2Score">🎯 Progress: <span id="t2Prog">0</span>/8</button>
+            <button class="btn" id="t2New">🎲 New game</button>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:12px">
+          <div class="memgrid" id="t2Grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK 3 -->
+    <section id="task3" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 3 - Wordsearch</h2>
+            <div class="hint">Click a word on the right, then click letters in order in the grid.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t3Score">
+              ⭐ Words found: <span id="t3Found">0</span>/<span id="t3Total">0</span>
+            </button>
+            <button class="btn" id="t3New">🧩 New grid</button>
+          </div>
+        </div>
+
+        <div class="ws">
+          <div class="board">
+            <div class="boardgrid" id="wsGrid"></div>
+            <div class="smallmuted" id="wsStatus">Choose a word → click letters.</div>
+          </div>
+
+          <div class="wlist">
+            <h3>Words</h3>
+            <div id="wsWords"></div>
+            <div class="footnote"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK 4 -->
+    <section id="task4" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 4 – Letters</h2>
+            <div class="hint">Drag the letters to make the word.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t4Score">⭐ 0 / 10</button>
+          </div>
+        </div>
+
+        <div class="panel" style="Attached; padding:24px;text-align:center">
+          <!-- picture -->
+          <div style="margin-bottom:18px">
+            <img id="t4Img" src="images/clock.png" alt="word" style="max-width:160px">
+          </div>
+
+          <!-- letters (JS fills) -->
+          <div id="t4Letters" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"></div>
+
+          <!-- slots (JS fills) -->
+          <div id="t4Slots" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footnote"></div>
+  </div>
+
+  <script>
+    /***************
+     * Sound (simple beeps)
+     ***************/
+    let SOUND_ON = true;
+    const soundBtn = document.getElementById('soundBtn');
+    soundBtn.addEventListener('click', () => {
+      SOUND_ON = !SOUND_ON;
+      soundBtn.textContent = SOUND_ON ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+      soundBtn.classList.toggle('good', SOUND_ON);
+      soundBtn.classList.toggle('bad', !SOUND_ON);
+    });
+
+    function beep(freq=520, ms=90, type='sine', gain=0.05){
+      if(!SOUND_ON) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.value = gain;
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      setTimeout(() => { o.stop(); ctx.close(); }, ms);
+    }
+
+    // ✅ УБРАЛИ “приятный/финальный гудок” полностью
+    const sOk = () => {};
+    const sBad = () => { beep(180,130,'sawtooth',0.04); };
+
+    /***************
+     * Tabs
+     ***************/
+    const tabs = [...document.querySelectorAll('[data-tab]')];
+    const tasks = {
+      task1: document.getElementById('task1'),
+      task2: document.getElementById('task2'),
+      task3: document.getElementById('task3'),
+      task4: document.getElementById('task4'),
+    };
+    tabs.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        tabs.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        Object.values(tasks).forEach(s=>s.classList.remove('active'));
+        tasks[btn.dataset.tab].classList.add('active');
+      });
+    });
+
+    /***************
+     * Shared helpers
+     ***************/
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /***************
+     * Task 1 — Drag
+     ***************/
+    const vocab15 = [
+      {id:'armchair', label:'armchair', img:'images/armchair.png'},
+      {id:'bed', label:'bed', img:'images/bed.png'},
+      {id:'bookcase', label:'bookcase', img:'images/bookcase.png'},
+      {id:'desk', label:'desk', img:'images/desk.png'},
+      {id:'chair', label:'chair', img:'images/chair.png'},
+      {id:'clock', label:'clock', img:'images/clock.png'},
+      {id:'computer', label:'computer', img:'images/computer.png'},
+      {id:'cupboard', label:'cupboard', img:'images/cupboard.png'},
+      {id:'lamp', label:'lamp', img:'images/lamp.png'},
+      {id:'mirror', label:'mirror', img:'images/mirror.png'},
+      {id:'phone', label:'phone', img:'images/phone.png'},
+      {id:'radio', label:'radio', img:'images/radio.png'},
+      {id:'sofa', label:'sofa', img:'images/sofa.png'},
+      {id:'table', label:'table', img:'images/table.png'},
+      {id:'wardrobe', label:'wardrobe', img:'images/wardrobe.png'},
+    ];
+
+    const t1Grid = document.getElementById('t1Grid');
+    const t1Chips = document.getElementById('t1Chips');
+    const t1CorrectEl = document.getElementById('t1Correct');
+    let t1State = { correct:0, used:new Set() };
+
+    function renderTask1(){
+      t1Grid.innerHTML = '';
+      t1Chips.innerHTML = '';
+      t1State.correct = 0;
+      t1State.used = new Set();
+      t1CorrectEl.textContent = '0';
+
+      const pics = shuffle(vocab15);
+      const words = shuffle(vocab15);
+
+      pics.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'piccard';
+        card.innerHTML = `
+          <div class="pic" aria-label="${item.label}">
+            <img src="${item.img}" alt="${item.label}" draggable="false">
+          </div>
+          <div class="drop" data-accept="${item.id}"></div>
+        `;
+        t1Grid.appendChild(card);
+      });
+
+      words.forEach(item=>{
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.draggable = true;
+        chip.dataset.wordId = item.id;
+        chip.textContent = item.label;
+        chip.addEventListener('dragstart', (e)=>{
+          if(chip.classList.contains('used')){ e.preventDefault(); return; }
+          e.dataTransfer.setData('text/plain', item.id);
+          chip.style.opacity = '0.6';
+          setTimeout(()=>chip.style.opacity='', 120);
+        });
+        t1Chips.appendChild(chip);
+      });
+
+      [...document.querySelectorAll('.drop')].forEach(drop=>{
+        drop.addEventListener('dragover', (e)=>{ e.preventDefault(); drop.classList.add('over'); });
+        drop.addEventListener('dragleave', ()=> drop.classList.remove('over'));
+        drop.addEventListener('drop', (e)=>{
+          e.preventDefault();
+          drop.classList.remove('over');
+          if(drop.classList.contains('filled')) return;
+
+          const got = e.dataTransfer.getData('text/plain');
+          const need = drop.dataset.accept;
+
+          const chip = [...t1Chips.querySelectorAll('.chip')].find(c=>c.dataset.wordId===got);
+          if(!chip || chip.classList.contains('used')) return;
+
+          if(got === need){
+            drop.classList.remove('bad');
+            drop.classList.add('filled');
+            drop.textContent = chip.textContent;
+
+            chip.classList.add('used','correct');
+            t1State.used.add(got);
+
+            t1State.correct++;
+            t1CorrectEl.textContent = String(t1State.correct);
+            sOk();
+          }else{
+            drop.classList.add('bad');
+            chip.classList.add('wrong');
+            sBad();
+            setTimeout(()=>{
+              drop.classList.remove('bad');
+              chip.classList.remove('wrong');
+            }, 450);
+          }
+        });
+      });
+    }
+
+    document.getElementById('t1Shuffle').addEventListener('click', renderTask1);
+    document.getElementById('t1Reset').addEventListener('click', renderTask1);
+
+    /***************
+     * Task 2 — Memory (8 pairs)
+     ***************/
+    const memPairs = [
+      {id:'armchair', label:'armchair', img:'images/armchair.png'},
+      {id:'bookcase', label:'bookcase', img:'images/bookcase.png'},
+      {id:'cupboard', label:'cupboard', img:'images/cupboard.png'},
+      {id:'computer', label:'computer', img:'images/computer.png'},
+      {id:'lamp', label:'lamp', img:'images/lamp.png'},
+      {id:'wardrobe', label:'wardrobe', img:'images/wardrobe.png'},
+      {id:'mirror', label:'mirror', img:'images/mirror.png'},
+      {id:'clock', label:'clock', img:'images/clock.png'},
+    ];
+
+    const t2Grid = document.getElementById('t2Grid');
+    const t2Prog = document.getElementById('t2Prog');
+
+    let t2 = {
+      deck: [],
+      revealed: [],
+      matched: new Set(),
+      progress: 0,
+      attempts: 0,
+      busy: false
+    };
+
+    function buildMemoryDeck(){
+      const cards = [];
+      memPairs.forEach(p=>{
+        cards.push({key: p.id, type:'img', front: p.img, text: p.label});
+        cards.push({key: p.id, type:'word', front: p.label, text: p.label});
+      });
+      return shuffle(cards);
+    }
+
+    function renderTask2(){
+      t2.deck = buildMemoryDeck();
+      t2.revealed = [];
+      t2.matched = new Set();
+      t2.progress = 0;
+      t2.attempts = 0;
+      t2.busy = false;
+      t2Prog.textContent = '0';
+      t2Grid.innerHTML = '';
+
+      t2.deck.forEach((c, idx)=>{
+        const card = document.createElement('div');
+        card.className = 'mcard';
+        card.dataset.index = String(idx);
+        card.dataset.key = c.key;
+        card.dataset.type = c.type;
+
+        const frontHTML = (c.type === 'img')
+          ? `<img src="${escapeHtml(c.front)}" alt="${escapeHtml(c.text||'')}" draggable="false">`
+          : escapeHtml(c.front);
+
+        card.innerHTML = `
+          <div class="back">${idx+1}</div>
+          <div class="front">${frontHTML}</div>
+        `;
+
+        card.addEventListener('click', ()=> onMemoryClick(card));
+        t2Grid.appendChild(card);
+      });
+    }
+
+    function onMemoryClick(cardEl){
+      if(t2.busy) return;
+      const idx = Number(cardEl.dataset.index);
+      const key = cardEl.dataset.key;
+      if(t2.matched.has(idx)) return;
+      if(cardEl.classList.contains('revealed')) return;
+
+      cardEl.classList.add('revealed');
+      t2.revealed.push({idx, key, el: cardEl});
+
+      if(t2.revealed.length === 2){
+        t2.busy = true;
+
+        const [a,b] = t2.revealed;
+        const ok = (a.key === b.key) && (a.el.dataset.type !== b.el.dataset.type);
+
+        if(ok){
+          sOk();
+          t2.matched.add(a.idx);
+          t2.matched.add(b.idx);
+          a.el.classList.add('matched');
+          b.el.classList.add('matched');
+          t2.progress++;
+          t2Prog.textContent = String(t2.progress);
+          t2.revealed = [];
+          t2.busy = false;
+        }else{
+          sBad();
+          setTimeout(()=>{
+            a.el.classList.remove('revealed');
+            b.el.classList.remove('revealed');
+            t2.revealed = [];
+            t2.busy = false;
+          }, 650);
+        }
+      }
+    }
+
+    document.getElementById('t2New').addEventListener('click', renderTask2);
+
+    /***************
+     * Task 3 — Wordsearch (10 words)
+     ***************/
+    const wsWordsRaw = [
+      "CUPBOARD",
+      "BOOKCASE",
+      "WARDROBE",
+      "LAMP",
+      "COMPUTER",
+      "ARMCHAIR",
+      "MIRROR",
+      "CLOCK",
+      "TABLE",
+      "PHONE",
+    ];
+
+    const wsGridEl = document.getElementById('wsGrid');
+    const wsWordsEl = document.getElementById('wsWords');
+    const wsStatus = document.getElementById('wsStatus');
+    const t3FoundEl = document.getElementById('t3Found');
+    const t3TotalEl = document.getElementById('t3Total');
+
+    let ws = {
+      size: 14,
+      grid: [],
+      placements: [],
+      activeWord: null,
+      activeIndex: 0,
+      tempCells: [],
+      found: new Set(),
+      locked: new Set()
+    };
+
+    function neighbors8(idx){
+      const r = Math.floor(idx / ws.size);
+      const c = idx % ws.size;
+      const out = [];
+      for(let dr=-1; dr<=1; dr++){
+        for(let dc=-1; dc<=1; dc++){
+          if(dr===0 && dc===0) continue;
+          const rr = r + dr;
+          const cc = c + dc;
+          if(rr>=0 && rr<ws.size && cc>=0 && cc<ws.size){
+            out.push(rr*ws.size + cc);
+          }
+        }
+      }
+      return out;
+    }
+
+    function placeWordNoTouch(word){
+      const maxTries = 1600;
+
+      for(let t=0; t<maxTries; t++){
+        const dir = Math.random() < 0.5 ? "H" : "V";
+        const r = Math.floor(Math.random()*ws.size);
+        const c = Math.floor(Math.random()*ws.size);
+
+        const cells = [];
+        if(dir === "H"){
+          if(c + word.length > ws.size) continue;
+          for(let k=0;k<word.length;k++) cells.push(r*ws.size + (c+k));
+        }else{
+          if(r + word.length > ws.size) continue;
+          for(let k=0;k<word.length;k++) cells.push((r+k)*ws.size + c);
+        }
+
+        const cand = new Set(cells);
+
+        let ok = true;
+        for(const idx of cells){
+          if(ws.grid[idx]) { ok=false; break; }
+        }
+        if(!ok) continue;
+
+        for(const idx of cells){
+          const near = neighbors8(idx);
+          for(const n of near){
+            if(cand.has(n)) continue;
+            if(ws.grid[n]) { ok=false; break; }
+          }
+          if(!ok) break;
+        }
+        if(!ok) continue;
+
+        for(let k=0;k<word.length;k++){
+          ws.grid[cells[k]] = word[k];
+        }
+        ws.placements.push({word, cells});
+        return true;
+      }
+
+      return false;
+    }
+
+    function buildWordSearchOrRetry(){
+      const maxBuildAttempts = 60;
+      for(let attempt=0; attempt<maxBuildAttempts; attempt++){
+        ws.grid = Array(ws.size * ws.size).fill("");
+        ws.placements = [];
+
+        const words = shuffle(wsWordsRaw);
+        let okAll = true;
+        for(const w of words){
+          const ok = placeWordNoTouch(w);
+          if(!ok){ okAll = false; break; }
+        }
+        if(okAll) return true;
+      }
+      return false;
+    }
+
+    function newWordSearch(){
+      ws.activeWord = null;
+      ws.activeIndex = 0;
+      ws.tempCells = [];
+      ws.found = new Set();
+      ws.locked = new Set();
+      t3FoundEl.textContent = "0";
+      if(t3TotalEl) t3TotalEl.textContent = String(wsWordsRaw.length);
+
+      const ok = buildWordSearchOrRetry();
+      if(!ok){
+        ws.size = 15;
+        buildWordSearchOrRetry();
+      }
+
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for(let i=0;i<ws.grid.length;i++){
+        if(!ws.grid[i]) ws.grid[i] = letters[Math.floor(Math.random()*letters.length)];
+      }
+
+      renderWordSearch();
+    }
+
+    function renderWordSearch(){
+      wsGridEl.style.setProperty('--n', ws.size);
+
+      wsWordsEl.innerHTML = "";
+      wsWordsRaw.forEach(w=>{
+        const b = document.createElement('button');
+        b.className = "wordbtn";
+        b.textContent = w.toLowerCase();
+        b.dataset.word = w;
+        b.addEventListener('click', ()=> selectWord(w));
+        wsWordsEl.appendChild(b);
+      });
+
+      wsGridEl.innerHTML = "";
+      ws.grid.forEach((ch, idx)=>{
+        const cell = document.createElement('div');
+        cell.className = "cell";
+        cell.textContent = ch;
+        cell.dataset.idx = String(idx);
+        cell.addEventListener('click', ()=> onWsCell(idx, cell));
+        wsGridEl.appendChild(cell);
+      });
+
+      setWsStatus("Choose a word → click letters.");
+      syncWordButtons();
+      syncLockedCells();
+    }
+
+    function setWsStatus(msg){ wsStatus.textContent = msg; }
+
+    function selectWord(word){
+      if(ws.found.has(word)) return;
+      ws.activeWord = word;
+      ws.activeIndex = 0;
+      clearTempMarks();
+      setWsStatus(`Now: ${word.toLowerCase()} (click letters in order)`);
+      syncWordButtons();
+    }
+
+    function syncWordButtons(){
+      [...wsWordsEl.querySelectorAll('.wordbtn')].forEach(btn=>{
+        const w = btn.dataset.word;
+        btn.classList.toggle('active', ws.activeWord === w);
+        btn.classList.toggle('found', ws.found.has(w));
+      });
+    }
+
+    function cellEl(idx){
+      return wsGridEl.querySelector(`.cell[data-idx="${idx}"]`);
+    }
+
+    function syncLockedCells(){
+      ws.locked.forEach(idx=>{
+        const el = cellEl(idx);
+        if(el){
+          el.classList.add('locked','good');
+          el.classList.remove('bad');
+        }
+      });
+    }
+
+    function clearTempMarks(){
+      ws.tempCells.forEach(idx=>{
+        if(ws.locked.has(idx)) return;
+        const el = cellEl(idx);
+        if(el) el.classList.remove('good','bad');
+      });
+      ws.tempCells = [];
+    }
+
+    function markBad(idx){
+      if(ws.locked.has(idx)) return;
+      const el = cellEl(idx);
+      if(!el) return;
+      el.classList.add('bad');
+      setTimeout(()=>el.classList.remove('bad'), 350);
+    }
+
+    function onWsCell(idx, el){
+      if(ws.locked.has(idx)) return;
+      if(!ws.activeWord){
+        sBad();
+        setWsStatus("First choose a word on the right 🙂");
+        return;
+      }
+
+      const expected = ws.activeWord[ws.activeIndex];
+      const got = ws.grid[idx];
+
+      if(got === expected){
+        sOk();
+        el.classList.add('good');
+        ws.tempCells.push(idx);
+        ws.activeIndex++;
+
+        if(ws.activeIndex === ws.activeWord.length){
+          const placement = ws.placements.find(p=>p.word===ws.activeWord);
+          const clicked = ws.tempCells.slice();
+
+          const sameSet = placement && placement.cells.length === clicked.length &&
+            placement.cells.every(x => clicked.includes(x));
+
+          if(sameSet){
+            clicked.forEach(i=>ws.locked.add(i));
+            ws.found.add(ws.activeWord);
+            t3FoundEl.textContent = String(ws.found.size);
+            setWsStatus(`✅ Found: ${ws.activeWord.toLowerCase()}!`);
+          }else{
+            sBad();
+            setWsStatus("Oops! Try again (wrong path).");
+          }
+
+          ws.activeWord = null;
+          ws.activeIndex = 0;
+          ws.tempCells = [];
+          syncWordButtons();
+          syncLockedCells();
+        }
+      }else{
+        sBad();
+        markBad(idx);
+        setWsStatus(`❌ Wrong letter. Start ${ws.activeWord.toLowerCase()} again.`);
+        clearTempMarks();
+        ws.activeIndex = 0;
+      }
+    }
+
+    document.getElementById('t3New').addEventListener('click', newWordSearch);
+
+    /***************
+     * Task 4 — Letters (FIXED: always matches word length, auto next word)
+     ***************/
+    (function initTask4(){
+      const lettersWrap = document.getElementById('t4Letters');
+      const slotsWrap   = document.getElementById('t4Slots');
+      const imgEl       = document.getElementById('t4Img');
+      const scoreBtn    = document.getElementById('t4Score');
+      if(!lettersWrap || !slotsWrap || !imgEl || !scoreBtn) return;
+
+      const t4Words = [
+        { word:'wardrobe', img:'images/wardrobe.png' },
+        { word:'computer', img:'images/computer.png' },
+        { word:'clock',    img:'images/clock.png' },
+        { word:'cupboard', img:'images/cupboard.png' },
+        { word:'bookcase', img:'images/bookcase.png' },
+        { word:'armchair', img:'images/armchair.png' },
+        { word:'table',    img:'images/table.png' },
+        { word:'mirror',   img:'images/mirror.png' },
+        { word:'phone',    img:'images/phone.png' },
+        { word:'sofa',     img:'images/sofa.png' },
+      ];
+
+      let t4Index = 0;
+      let answer  = '';
+      let dragEl  = null;
+
+      function setSlotBase(slot){
+        slot.style.borderStyle = 'dashed';
+        slot.style.borderColor = '#bcd7ff';
+        slot.style.background  = '#f7fbff';
+      }
+      function setSlotGood(slot){
+        slot.style.borderStyle = 'solid';
+        slot.style.borderColor = 'rgba(34,197,94,.75)';
+        slot.style.background  = '#eafff2';
+      }
+      function flashSlotBad(slot){
+        slot.style.borderStyle = 'solid';
+        slot.style.borderColor = 'rgba(239,68,68,.75)';
+        slot.style.background  = '#ffecec';
+        setTimeout(()=> setSlotBase(slot), 300);
+      }
+
+      function buildLetters(word){
+        return shuffle(word.toLowerCase().split(''));
+      }
+
+      function renderWord(){
+        const item = t4Words[t4Index];
+        answer = item.word.toLowerCase();
+
+        imgEl.src = item.img;
+        imgEl.alt = item.word;
+
+        // score (до решения)
+        scoreBtn.textContent = `⭐ ${t4Index} / ${t4Words.length}`;
+
+        // clear
+        lettersWrap.innerHTML = '';
+        slotsWrap.innerHTML = '';
+        lettersWrap.style.pointerEvents = 'auto';
+        slotsWrap.style.pointerEvents = 'auto';
+        dragEl = null;
+
+        // slots (по длине слова!)
+        for(let i=0;i<answer.length;i++){
+          const slot = document.createElement('div');
+          slot.className = 't4-slot';
+          slot.dataset.pos = String(i);
+          slot.dataset.filled = '0';
+          setSlotBase(slot);
+
+          slot.addEventListener('dragover', e => e.preventDefault());
+          slot.addEventListener('drop', e => {
+            e.preventDefault();
+            if(!dragEl) return;
+
+            if(slot.dataset.filled === '1'){
+              sBad();
+              flashSlotBad(slot);
+              dragEl = null;
+              return;
+            }
+
+            const ch = (dragEl.textContent || '').toLowerCase();
+            const pos = Number(slot.dataset.pos);
+            const expected = answer[pos];
+
+            if(ch === expected){
+              slot.textContent = ch;
+              slot.dataset.filled = '1';
+              setSlotGood(slot);
+
+              dragEl.style.visibility = 'hidden';
+              dragEl.setAttribute('draggable','false');
+              dragEl = null;
+
+              const allFilled = [...slotsWrap.querySelectorAll('.t4-slot')]
+                .every(s => s.dataset.filled === '1');
+
+              if(allFilled){
+                // слово собрано -> следующий
+                scoreBtn.textContent = `⭐ ${t4Index + 1} / ${t4Words.length}`;
+
+                setTimeout(()=>{
+                  t4Index++;
+
+                  if(t4Index >= t4Words.length){
+                    scoreBtn.textContent = `⭐ ${t4Words.length} / ${t4Words.length} ✅`;
+                    lettersWrap.style.pointerEvents = 'none';
+                    slotsWrap.style.pointerEvents = 'none';
+                    return;
+                  }
+
+                  renderWord();
+                }, 450);
+              }
+            }else{
+              sBad();
+              flashSlotBad(slot);
+              dragEl = null; // буква остаётся сверху
+            }
+          });
+
+          slotsWrap.appendChild(slot);
+        }
+
+        // letters
+        const letters = buildLetters(answer);
+        letters.forEach(ch=>{
+          const el = document.createElement('div');
+          el.className = 't4-letter';
+          el.textContent = ch;
+          el.setAttribute('draggable','true');
+
+          el.addEventListener('dragstart', (e)=>{
+            dragEl = el;
+            e.dataTransfer.setData('text/plain', ch);
+            setTimeout(()=>{ el.style.opacity = '0.55'; }, 0);
+          });
+
+          el.addEventListener('dragend', ()=>{
+            el.style.opacity = '';
+            dragEl = null;
+          });
+
+          lettersWrap.appendChild(el);
+        });
+      }
+
+      renderWord();
+    })();
+
+    /***************
+     * Init
+     ***************/
+    renderTask1();
+    renderTask2();
+    newWordSearch();
+  </script>
+</body>
+</html>

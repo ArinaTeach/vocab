@@ -1,1 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Food Drag Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="title">
+        <div>
+          <h1>Food Drag Game 🍟</h1>
+          <div class="hint">Say the word and drag it to the correct picture.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="restartBtn">🔄</button>
+      </div>
+    </header>
+
+    <main class="game">
+      <section class="wordsPanel">
+        <div class="words" id="words"></div>
+      </section>
+
+      <section class="cardsArea">
+        <div class="grid" id="grid" aria-label="Food drag game"></div>
+      </section>
+    </main>
+
+    <div class="win" id="win" hidden>
+      <div class="winCard" role="dialog" aria-modal="true">
+        <div class="winTitle">🎉 Great!</div>
+        <div class="winText">You matched all the words.</div>
+        <button class="btn big" id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+
+    <audio id="okSound" preload="auto">
+      <source src="sounds/correct.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="wrongSound" preload="auto">
+      <source src="sounds/wrong.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

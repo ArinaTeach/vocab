@@ -1,1 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Seasons & Months • Mini Site</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge">
+          <img src="images/avatar.png" alt="Print & Teach">
+        </div>
+        <div>
+          <h1>Seasons & Months</h1>
+          <div class="sub">drag • unscramble • wordsearch • translation cards</div>
+        </div>
+      </div>
+
+      <div class="topbar">
+        <button class="btn primary active" data-tab="task1">Task 1</button>
+        <button class="btn primary" data-tab="task2">Task 2</button>
+        <button class="btn primary" data-tab="task3">Task 3</button>
+        <button class="btn primary" data-tab="task4">Task 4</button>
+        <button class="btn" id="soundBtn" title="Sound on/off">🔊 Sound: ON</button>
+      </div>
+    </header>
+
+    <!-- TASK 1 -->
+    <section id="task1" class="task active">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 1 - Sort months by season</h2>
+            <div class="hint">Drag a month into the correct season box.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t1Score">✅ Correct: <span id="t1Correct">0</span>/12</button>
+            <button class="btn" id="t1Shuffle">🔄 Shuffle</button>
+            <button class="btn" id="t1Reset">↩ Reset</button>
+          </div>
+        </div>
+
+        <div class="t1-layout">
+          <div class="panel inner">
+            <div class="chips" id="t1Months"></div>
+          </div>
+
+          <div class="t1-boxes">
+            <div class="seasonCard" data-season="winter">
+              <div class="seasonHead">
+                <div class="seasonIcon">❄️</div>
+                <div class="seasonTitle">Winter</div>
+              </div>
+              <div class="dropzone" data-accept="winter">
+                <div class="dropHint">Drop months here</div>
+              </div>
+            </div>
+
+            <div class="seasonCard" data-season="spring">
+              <div class="seasonHead">
+                <div class="seasonIcon">🌷</div>
+                <div class="seasonTitle">Spring</div>
+              </div>
+              <div class="dropzone" data-accept="spring">
+                <div class="dropHint">Drop months here</div>
+              </div>
+            </div>
+
+            <div class="seasonCard" data-season="summer">
+              <div class="seasonHead">
+                <div class="seasonIcon">☀️</div>
+                <div class="seasonTitle">Summer</div>
+              </div>
+              <div class="dropzone" data-accept="summer">
+                <div class="dropHint">Drop months here</div>
+              </div>
+            </div>
+
+            <div class="seasonCard" data-season="autumn">
+              <div class="seasonHead">
+                <div class="seasonIcon">🍂</div>
+                <div class="seasonTitle">Autumn</div>
+              </div>
+              <div class="dropzone" data-accept="autumn">
+                <div class="dropHint">Drop months here</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footnote"></div>
+      </div>
+    </section>
+
+    <!-- TASK 2 -->
+    <section id="task2" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 2 - Unscramble the month</h2>
+            <div class="hint">Drag letters into the word.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t2Score">⭐ <span id="t2Prog">0</span>/12</button>
+            <button class="btn" id="t2New">🎲 New word</button>
+            <button class="btn" id="t2Reset">↩ Reset</button>
+          </div>
+        </div>
+
+        <div class="t2-wrap">
+          <div class="bigCard">
+            <div class="bigEmoji" id="t2Emoji">🗓️</div>
+            <div class="bigWord" id="t2WordLabel">month</div>
+          </div>
+
+          <div class="slots" id="t2Slots"></div>
+          <div class="lettersTray" id="t2Letters"></div>
+          <div class="smallmuted" id="t2Status">Drag letters to build the word.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK 3 -->
+    <section id="task3" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 3 - Wordsearch (months)</h2>
+            <div class="hint">Click a month on the right, then click letters in order in the grid. Words are placed horizontally or vertically.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t3Score">⭐ Found: <span id="t3Found">0</span>/<span id="t3Total">12</span></button>
+            <button class="btn" id="t3New">🧩 New grid</button>
+          </div>
+        </div>
+
+        <div class="ws">
+          <div class="board">
+            <div class="boardgrid" id="wsGrid"></div>
+            <div class="smallmuted" id="wsStatus"></div>
+          </div>
+
+          <div class="wlist">
+            <h3>Months</h3>
+            <div id="wsWords"></div>
+            <div class="footnote"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK 4 -->
+    <section id="task4" class="task">
+      <div class="panel">
+        <div class="taskhead">
+          <div>
+            <h2>Task 4 - Translation Cards</h2>
+            <div class="hint">Click a card: read the sentence, then say it in English. Click to check.</div>
+          </div>
+          <div class="stats">
+            <button class="btn" id="t4Reset">↩ Reset</button>
+          </div>
+        </div>
+
+        <div class="memory-grid" id="t4Grid"></div>
+        <div class="footnote"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
